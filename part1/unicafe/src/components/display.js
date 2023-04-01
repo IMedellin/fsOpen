@@ -1,38 +1,46 @@
+import StatisticLine from "./statisticLine";
+import "../componentsStyles/display.css"
+
 const Display = (props) => {
-  const { name, ratingNum, getAvg, getPercentage } = props;
-  if (name === "Average") {
-    if (!getAvg()) {
-      return (
-        <>
-          <p>{name}: <strong>Average Reviews</strong></p>
-        </>
-      )
+  const { good, neutral, bad } = props;
+
+  const getAvg = (g = good, b = bad) => {
+    const handler = () => {
+      let total = good + bad + neutral
+      return ((g - b) / total) * 100
+
     }
-    return (
-      <>
-        <p>{name} <strong>{getAvg()}</strong></p>
-      </>
-    )
-  } else if (name === "Positive") {
-    if (!getPercentage) {
-      return (
-        <>
-          <p>{name}: <strong>Percentage of good reviews</strong></p>
-        </>
-      )
-    } else {
-      return (
-        <>
-          <p>{name} <strong>{getPercentage}</strong></p>
-        </>
-      )
-    }
+    return handler
   }
 
+  const getPercentage = () => {
+    let total = good + bad + neutral
+    return Math.floor((good / total) * 100)
+  }
+
+
+
   return (
-    <>
-      <p>{name} <strong>{ratingNum}</strong></p>
-    </>
+    <table>
+      <tr>
+        <StatisticLine name={"Good"} ratingNum={good} />
+      </tr>
+      <tr>
+        <StatisticLine name={"Neutral"} ratingNum={neutral} />
+      </tr>
+      <tr>
+        <StatisticLine name={"Bad"} ratingNum={bad} />
+      </tr>
+      <tr>
+        <StatisticLine name={"All"} ratingNum={good + bad + neutral} />
+      </tr>
+      <tr>
+        <StatisticLine name={"Average"} getAvg={getAvg(good, bad)} />
+      </tr>
+      <tr>
+        <StatisticLine name={"Positive"} getPercentage={getPercentage()} />
+      </tr>
+    </table >
   )
 }
 
