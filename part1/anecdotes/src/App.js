@@ -1,6 +1,6 @@
 import { useState } from 'react'
-
-
+import "./styles/appStyles.css"
+import BestAncedote from './components/bestAncedote'
 function App() {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -16,23 +16,41 @@ function App() {
   const [selected, setSelected] = useState(0)
   const [score, setScore] = useState({})
 
+
+  //Getting random ancedotes
   const handleAncedote = () => {
     let newSelected = Math.floor(Math.random(anecdotes.length) * anecdotes.length)
     setSelected(newSelected)
   }
 
+  //Handle the voting of random ancedotes with and object
   const handleVote = () => {
     const newScore = {
       ...score,
     }
+    //The object will use the index of the ancedote as the key and the num of votes as the value
     if (!newScore[selected]) {
       newScore[selected] = 1
     } else {
       newScore[selected] += 1
     }
+
     setScore(newScore)
   }
 
+
+  const findBestAncedote = () => {
+    const scoresArray = Object.values(score) // Will make array containing scores
+    let best = Math.max(...scoresArray) //Finds best score in array
+
+    for (let key in score) {
+      if (score[key] >= best) {
+        return (
+          <p>{anecdotes[key]}<br></br>with {score[key]} votes!</p>
+        )
+      }
+    }
+  }
 
   if (!score[selected]) {
     score[selected] = 0
@@ -40,13 +58,19 @@ function App() {
 
 
   return (
-    <div>
-      <p>{anecdotes[selected]}<br></br>
-        Has {score[selected]} votes
-      </p>
-      <button onClick={handleVote}>Vote</button>
-      <button onClick={handleAncedote}>Next Ancedote</button>
-    </div>
+    <>
+      <div>
+        <h1>Ancedote of the day</h1>
+        <p>{anecdotes[selected]}<br></br>Has {score[selected]} votes</p>
+        <div className="buttons">
+          <button onClick={handleVote}>Vote</button>
+          <button onClick={handleAncedote}>Next Ancedote</button>
+        </div>
+        <h1>Ancedote with the most votes</h1>
+        <BestAncedote findBestAncedote={findBestAncedote} />
+      </div>
+    </>
+
   )
 }
 

@@ -1,0 +1,19 @@
+h1 {
+  font-size: 30px;
+  border-bottom: 2px solid black;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  font-size: large;
+}
+
+.buttons {
+  text-align: center;
+  margin-left: 1em;
+}
+
+.buttons button {
+  margin-left: 2.5em
+}
