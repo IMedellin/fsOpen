@@ -33,6 +33,25 @@ const App = () => {
     return Math.floor((good / total) * 100)
   }
 
+  const checkFeedback = () => {
+    if (!good && !neutral && !bad) {
+      return (
+        <h3>No Feedback Given</h3>
+      )
+    } else {
+      return (
+        <>
+          <Display name={"Good"} ratingNum={good} />
+          <Display name={"Neutral"} ratingNum={neutral} />
+          <Display name={"Bad"} ratingNum={bad} />
+          <Display name={"All"} ratingNum={good + bad + neutral} />
+          <Display name={"Average"} getAvg={getAvg(good, bad)} />
+          <Display name={"Positive"} getPercentage={getPercentage()} />
+        </>
+      )
+    }
+  }
+
   return (
     <>
       <h1>Give Feedback</h1>
@@ -40,12 +59,7 @@ const App = () => {
       <Button text={'Neutral'} handleClick={handleNeutral} />
       <Button text={'Bad'} handleClick={handleBad} />
       <h2>Statistics</h2>
-      <Display name={"Good"} ratingNum={good} />
-      <Display name={"Neutral"} ratingNum={neutral} />
-      <Display name={"Bad"} ratingNum={bad} />
-      <Display name={"All"} ratingNum={good + bad + neutral} />
-      <Display name={"Average"} getAvg={getAvg(good, bad)} />
-      <Display name={"Positive"} getPercentage={getPercentage()} />
+      <>{checkFeedback()}</>
     </>
   )
 }
