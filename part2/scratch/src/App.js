@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import Note from './components/Note'
 
-function App() {
+//Hooks
+import { useState } from 'react'
+const App = (props) => {
+  const { notesArray } = props
+
+  const [notes, setNotes] = useState(notesArray)
+  const [newNote, setNewNote] = useState(
+    "Add Note"
+  )
+  const [showAll, setShowAll] = useState(true)
+
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  const addNote = (event) => {
+    event.preventDefault()
+    const newNotes = [...notes,
+    {
+      id: notes.length + 1,
+      content: newNote,
+      important: Math.floor(Math.random() * 10) < 5
+    }]
+    setNotes(newNotes)
+    setNewNote("")
+  }
+
+  const handleNoteChange = (e) => {
+    let createNewNote = e.target.value
+    setNewNote(createNewNote)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Notes</h1>
+      <label htmlFor="notesDropdown">Sort by:</label>
+      <select onChange={() => setShowAll(!showAll)} name="notes" id="notesDropdown">
+        <option>All</option>
+        <option>Important</option>
+      </select>
+      <ul>
+        {notesToShow.map(note =>
+          <Note key={note.id} note={note} />
+        )}
+      </ul>
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={handleNoteChange} />
+        <button type="submit">Save</button>
+      </form>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
