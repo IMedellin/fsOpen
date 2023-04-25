@@ -1,30 +1,24 @@
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import axios from "axios"
 import Number from './components/Number'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {
-      name: 'Arto Hellas',
-      number: '123-456-7890',
-      id: Math.floor(Math.random() * 100000),
-    },
-    {
-      name: 'Ada Lovelace',
-      number: '39-44-5323523',
-      id: Math.floor(Math.random() * 100000)
-    },
-    {
-      name: 'Dan Abramov',
-      number: '12-43-234345',
-      id: Math.floor(Math.random() * 100000)
-    },
-    {
-      name: 'Mary Poppendieck',
-      number: '39-23-6423122',
-      id: 4
+  const [persons, setPersons] = useState([])
+
+
+  useEffect(() => {
+    let ignore = false
+    axios
+      .get("http://localhost:3001/persons")
+      .then(res => {
+        const data = res.data;
+        setPersons(data)
+      })
+    return () => {
+      ignore = true
     }
-  ])
+  }, [])
+
 
   //State of Application
   const [newName, setNewName] = useState('')

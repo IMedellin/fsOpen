@@ -1,6 +1,4 @@
 
-
-
 const Number = (props) => {
   const { name, number } = props
 
