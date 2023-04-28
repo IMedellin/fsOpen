@@ -1,29 +1,41 @@
+//Hooks
 import { useState, useEffect } from 'react'
-import axios from "axios"
+//Modules
+import phoneService from './services/persons.js'
+//Components
 import Number from './components/Number'
 
 const App = () => {
+  //State of Application
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
 
 
+
+
+  const ContactDelete = async (id) => {
+    if (window.confirm("Are you sure?")) {
+      await phoneService.remove(id)
+      setPersons(persons.filter(person => person.id !== id))
+    } else return
+  }
+
   useEffect(() => {
     let ignore = false
-    axios
-      .get("http://localhost:3001/persons")
+    phoneService
+      .getAll()
       .then(res => {
-        const data = res.data;
-        setPersons(data)
+        if (!ignore) {
+          const data = res.data;
+          setPersons(data)
+        }
       })
     return () => {
       ignore = true
     }
   }, [])
-
-
-  //State of Application
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [filter, setFilter] = useState('')
 
 
 
@@ -45,7 +57,6 @@ const App = () => {
       } else {
         ifExists = false
       }
-
     })
     return ifExists
   }
@@ -69,7 +80,6 @@ const App = () => {
       return
     }
     const newPerson = {
-      id: Math.floor(Math.random() * 100000),
       name: newName,
       number: newNumber
     }
@@ -77,9 +87,15 @@ const App = () => {
       alert(`${e.target[0].value} already exists in the phonebook`)
       return
     } else {
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      phoneService
+        .create(newPerson)
+        .then(res => {
+          let id = res.data.id
+          newPerson.id = id
+          setPersons(persons.concat(newPerson))
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
 
@@ -104,7 +120,7 @@ const App = () => {
       <h2>Contacts</h2>
       <div>
         {filterContacts.map(person => {
-          return <Number name={person.name} number={person.number} key={person.id} />
+          return <Number name={person.name} number={person.number} key={person.id} id={person.id} handleContactDelete={ContactDelete} />
         })}
       </div>
     </div>
